@@ -5,20 +5,11 @@ export default class OvVideoComponent extends Component {
     constructor(props) {
         super(props);
         this.videoRef = React.createRef();
-
-        // this.sessionIds = [
-        //     {sessionId:'orto'},
-        //     {sessionId:'ped'},
-        //     {sessionId:'gastro'},
-        //     {sessionId:'onco'},
-        //     {sessionId:'gine'},
-        //     {sessionId:'uro'},
-        // ];
     }
 
     componentDidMount() {
         if (this.props && this.props.user.streamManager && !!this.videoRef) {
-            console.log('PROPS: ', this.props);
+            // console.log('PROPS: ', this.props);
             this.props.user.getStreamManager().addVideoElement(this.videoRef.current);
         }
 

@@ -24,7 +24,6 @@ class VideoRoomComponent extends Component {
         this.layout = new OpenViduLayout();
         let sessionName = this.props.sessionName ? this.props.sessionName : new URLSearchParams(window.location.search).get("sala");
         let userName = this.props.user ? this.props.user : new URLSearchParams(window.location.search).get("user");
-        console.log("===================================",new URLSearchParams(window.location.search).get("sala"))
 
         this.userId = [
             {name: 'João', user_id: 6, sessionId:'orto'},
@@ -51,20 +50,21 @@ class VideoRoomComponent extends Component {
             chatDisplay: 'none',
         };
 
-        this.joinSession = this.joinSession.bind(this);
-        this.leaveSession = this.leaveSession.bind(this);
-        this.onbeforeunload = this.onbeforeunload.bind(this);
-        this.updateLayout = this.updateLayout.bind(this);
-        this.camStatusChanged = this.camStatusChanged.bind(this);
-        this.micStatusChanged = this.micStatusChanged.bind(this);
-        this.nicknameChanged = this.nicknameChanged.bind(this);
-        this.toggleFullscreen = this.toggleFullscreen.bind(this);
-        this.screenShare = this.screenShare.bind(this);
-        this.stopScreenShare = this.stopScreenShare.bind(this);
-        this.closeDialogExtension = this.closeDialogExtension.bind(this);
-        this.toggleChat = this.toggleChat.bind(this);
-        this.checkNotification = this.checkNotification.bind(this);
-        this.checkSize = this.checkSize.bind(this);
+        this.joinSession            = this.joinSession.bind(this);
+        this.leaveSession           = this.leaveSession.bind(this);
+        this.onbeforeunload         = this.onbeforeunload.bind(this);
+        this.updateLayout           = this.updateLayout.bind(this);
+        this.camStatusChanged       = this.camStatusChanged.bind(this);
+        this.micStatusChanged       = this.micStatusChanged.bind(this);
+        this.nicknameChanged        = this.nicknameChanged.bind(this);
+        this.toggleFullscreen       = this.toggleFullscreen.bind(this);
+        this.screenShare            = this.screenShare.bind(this);
+        this.stopScreenShare        = this.stopScreenShare.bind(this);
+        this.closeDialogExtension   = this.closeDialogExtension.bind(this);
+        this.toggleChat             = this.toggleChat.bind(this);
+        this.checkNotification      = this.checkNotification.bind(this);
+        this.checkSize              = this.checkSize.bind(this);
+        this.recordSession          = this.recordSession.bind(this);
     }
 
     componentDidMount() {
@@ -407,6 +407,11 @@ class VideoRoomComponent extends Component {
         this.connectWebCam();
     }
 
+   recordSession() {
+    console.log("%crecordSessio", "color:pink")
+   }
+
+
     checkSomeoneShareScreen() {
         let isScreenShared;
         // return true if at least one passes the test
@@ -465,16 +470,17 @@ class VideoRoomComponent extends Component {
         return (
             <div className="container" id="container">
                 <ToolbarComponent
-                    sessionId={mySessionId}
-                    user={localUser}
-                    showNotification={this.state.messageReceived}
-                    camStatusChanged={this.camStatusChanged}
-                    micStatusChanged={this.micStatusChanged}
-                    screenShare={this.screenShare}
-                    stopScreenShare={this.stopScreenShare}
-                    toggleFullscreen={this.toggleFullscreen}
-                    leaveSession={this.leaveSession}
-                    toggleChat={this.toggleChat}
+                    sessionId          = {mySessionId}
+                    user               = {localUser}
+                    showNotification   = {this.state.messageReceived}
+                    camStatusChanged   = {this.camStatusChanged}
+                    micStatusChanged   = {this.micStatusChanged}
+                    screenShare        = {this.screenShare}
+                    stopScreenShare    = {this.stopScreenShare}
+                    toggleFullscreen   = {this.toggleFullscreen}
+                    leaveSession       = {this.leaveSession}
+                    toggleChat         = {this.toggleChat}
+                    recordSession      = {this.recordSession}
                 />
 
                 <DialogExtensionComponent showDialog={this.state.showExtensionDialog} cancelClicked={this.closeDialogExtension} />
@@ -532,7 +538,7 @@ class VideoRoomComponent extends Component {
                     },
                 })
                 .then((response) => {
-                    console.log('CREATE SESSION', response);
+                    // console.log('CREATE SESSION', response);
                     resolve(response.data.id);
                 })
                 .catch((response) => {
@@ -541,9 +547,9 @@ class VideoRoomComponent extends Component {
                         resolve(sessionId);
                     } else {
                         // console.log(error);
-                        console.warn(
-                            'No connection to OpenVidu Server. This may be a certificate error at ' + this.OPENVIDU_SERVER_URL,
-                        );
+                        // console.warn(
+                        //     'No connection to OpenVidu Server. This may be a certificate error at ' + this.OPENVIDU_SERVER_URL,
+                        // );
                         if (
                             window.confirm(
                                 'No connection to OpenVidu Server. This may be a certificate error at "' +
@@ -558,13 +564,13 @@ class VideoRoomComponent extends Component {
                         }
                     }
                 });
-        });
-    }
-
-    createToken(sessionId) {
-        return new Promise((resolve, reject) => {
-            var data = JSON.stringify({});
-            axios
+            });
+        }
+        
+        createToken(sessionId) {
+            return new Promise((resolve, reject) => {
+                var data = JSON.stringify({});
+                axios
                 .post(this.OPENVIDU_SERVER_URL + '/openvidu/api/sessions/' + sessionId + '/connection', data, {
                     headers: {
                         Authorization: 'Basic ' + btoa('OPENVIDUAPP:' + this.OPENVIDU_SERVER_SECRET),
@@ -578,5 +584,33 @@ class VideoRoomComponent extends Component {
                 .catch((error) => reject(error));
         });
     }
+
+        recordSession(){
+            return new Promise((resolve, reject) => {
+                let data = JSON.stringify({
+                    "session":"pandolfe",
+                    "name":"MyRecording",
+                    "outputMode":"COMPOSED",
+                    "hasAudio": true,
+                    "hasVideo": true,
+                    "recordingLayout":"CUSTOM",
+                    "customLayout":"",
+                    "resolution": "1280x720"
+                });
+                axios.post(`${this.OPENVIDU_SERVER_URL}/openvidu/api/recordings/start`,
+                    data, {
+                        headers: {
+                            Authorization: 'Basic ' + btoa('OPENVIDUAPP:' + this.OPENVIDU_SERVER_SECRET),
+                            'Content-Type': 'application/json',
+                        },
+                },
+                
+                ).then((response) => {
+                    console.log("%cRecord ============,", "color:red",response);
+            })
+        })
+    }
+
+    
 }
 export default VideoRoomComponent;

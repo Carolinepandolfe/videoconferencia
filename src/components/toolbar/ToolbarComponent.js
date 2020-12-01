@@ -16,6 +16,8 @@ import StopScreenShare from '@material-ui/icons/StopScreenShare';
 import Tooltip from '@material-ui/core/Tooltip';
 import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew';
 import QuestionAnswer from '@material-ui/icons/QuestionAnswer';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import StopIcon from '@material-ui/icons/Stop';
 
 import IconButton from '@material-ui/core/IconButton';
 
@@ -24,14 +26,15 @@ const logo = require('../../assets/images/sp_mais.png');
 export default class ToolbarComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = { fullscreen: false };
-        this.camStatusChanged = this.camStatusChanged.bind(this);
-        this.micStatusChanged = this.micStatusChanged.bind(this);
-        this.screenShare = this.screenShare.bind(this);
-        this.stopScreenShare = this.stopScreenShare.bind(this);
-        this.toggleFullscreen = this.toggleFullscreen.bind(this);
-        this.leaveSession = this.leaveSession.bind(this);
-        this.toggleChat = this.toggleChat.bind(this);
+        this.state              = { fullscreen: false };
+        this.camStatusChanged   = this.camStatusChanged.bind(this);
+        this.micStatusChanged   = this.micStatusChanged.bind(this);
+        this.screenShare        = this.screenShare.bind(this);
+        this.stopScreenShare    = this.stopScreenShare.bind(this);
+        this.toggleFullscreen   = this.toggleFullscreen.bind(this);
+        this.leaveSession       = this.leaveSession.bind(this);
+        this.toggleChat         = this.toggleChat.bind(this);
+        this.recordSession      = this.recordSession.bind(this);
     }
 
 
@@ -64,6 +67,10 @@ export default class ToolbarComponent extends Component {
         this.props.toggleChat();
     }
 
+    recordSession(){
+        this.props.recordSession();
+    }
+
     render() {
         const mySessionId = this.props.sessionId;
         const localUser = this.props.user;
@@ -73,7 +80,7 @@ export default class ToolbarComponent extends Component {
                     <div id="navSessionInfo">
                         <img
                             id="header_img"
-                            alt="OpenVidu Logo"
+                            alt="HSP Logo"
                             src={logo}
                         />
 
@@ -111,6 +118,11 @@ export default class ToolbarComponent extends Component {
                         </IconButton>
                         <IconButton color="secondary" className="navButton" onClick={this.leaveSession} id="navLeaveButton">
                             <PowerSettingsNew />
+                        </IconButton>
+                        <IconButton color="secondary" className="navButton" onClick={this.recordSession}>
+                            <Tooltip title="Gravar">
+                                <FiberManualRecordIcon />
+                            </Tooltip>
                         </IconButton>
                          <IconButton color="inherit" onClick={this.toggleChat} id="navChatButton">
                             {this.props.showNotification && <div id="point" className="" />}

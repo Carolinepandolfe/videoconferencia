@@ -12,8 +12,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import IconButton from '@material-ui/core/IconButton';
 import HighlightOff from '@material-ui/icons/HighlightOff';
 import FormHelperText from '@material-ui/core/FormHelperText';
-// import { get } from 'jquery';
-
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import StopIcon from '@material-ui/icons/Stop';
 export default class StreamComponent extends Component {
     constructor(props) {
         super(props);
